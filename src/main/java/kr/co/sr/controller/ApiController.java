@@ -6,10 +6,15 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class ApiController {
 
-    @GetMapping("/info")
-    public String test() {
 
-        return "ok 200!";
+    /**
+     * 테스트 코드 예시
+     * @return
+     */
+    @GetMapping("/hello")
+    public String hello() {
+
+        return "hello";
     }
 
 }
