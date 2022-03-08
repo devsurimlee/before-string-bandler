@@ -1,6 +1,7 @@
 package kr.co.sr;
 
 import kr.co.sr.controller.ApiController;
+import kr.co.sr.dto.ApiDto;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -28,6 +29,13 @@ public class ApiTest {
         mockMvc.perform(get("/hello"))
                 .andExpect(status().isOk())
                 .andExpect(content().string(hello));
+
+    }
+
+    @Test
+    public void parsingURL_test() throws Exception {
+        String url = "https://www.naver.com";
+
 
 
     }

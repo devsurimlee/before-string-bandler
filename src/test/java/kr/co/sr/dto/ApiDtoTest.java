@@ -8,8 +8,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class ApiDtoTest {
 
     @Test
-    public void test() {
-        String url = "<div>A0a1B2b3</div>";
+    public void dto_test() {
+        String url = "http://localhost:8008/";
         int parsingType = 0;
         int bundleUnit = 3;
         String quotient = "A0a1B2";
