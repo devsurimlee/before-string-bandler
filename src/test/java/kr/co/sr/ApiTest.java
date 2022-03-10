@@ -3,6 +3,7 @@ package kr.co.sr;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import kr.co.sr.controller.ApiController;
 import kr.co.sr.dto.ApiDto;
+import kr.co.sr.util.ApiConst;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -34,15 +35,6 @@ public class ApiTest {
     @Autowired
     private ApplicationContext applicationContext;
 
-    @Test
-    public void hello_test() throws Exception {
-        String hello = "hello";
-
-        mockMvc.perform(get("/hello"))
-                .andExpect(status().isOk())
-                .andExpect(content().string(hello));
-
-    }
 
     @Test
     public void getUrlContent_success() throws Exception {
@@ -63,7 +55,7 @@ public class ApiTest {
 
         String content = mapper.writeValueAsString(dto);
 
-        mockMvc.perform(post("/v1/getUrlContent")
+        mockMvc.perform(post(ApiConst.API_VERSION + "/getUrlContent")
                 .content(content)
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON))
@@ -73,4 +65,15 @@ public class ApiTest {
                 .andDo(print());
 
     }
+
+    @Test
+    public void hello_test() throws Exception {
+        String hello = "hello";
+
+        mockMvc.perform(get("/hello"))
+                .andExpect(status().isOk())
+                .andExpect(content().string(hello));
+
+    }
+    
 }

@@ -1,35 +1,24 @@
 package kr.co.sr.controller;
 
+import io.swagger.annotations.ApiOperation;
 import kr.co.sr.dto.ApiDto;
+import kr.co.sr.util.ApiConst;
 import org.springframework.web.bind.annotation.*;
+import springfox.documentation.annotations.ApiIgnore;
 
 import java.io.BufferedReader;
-import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.net.InetAddress;
-import java.net.MalformedURLException;
 import java.net.URL;
-import java.net.UnknownHostException;
 import java.util.*;
 
 @RestController
-@RequestMapping("/v1")
+@RequestMapping(ApiConst.API_VERSION)
 public class ApiController {
 
 
-    /**
-     * 테스트 코드 예시
-     *
-     * @return
-     */
-    @GetMapping("/hello")
-    public String hello() {
-
-        return "hello";
-    }
-
     @PostMapping("/getUrlContent")
+    @ApiOperation(value = "URL 컨텐츠 조회", notes = "URL 컨텐츠를 조건에 맞게 필터링하고 조회한다.")
     public ApiDto getUrlContent(@RequestBody ApiDto dto) {
 
         String html = "";
@@ -103,6 +92,13 @@ public class ApiController {
         }
 
         return dto;
+    }
+
+    @ApiIgnore
+    @GetMapping("/hello")
+    public String hello() {
+
+        return "hello";
     }
 
     private String checkPattern(String str, String pattern) {
