@@ -12,16 +12,16 @@ public class ApiDtoTest {
         String url = "http://localhost:8008/";
         int parsingType = 0;
         int bundleUnit = 3;
-        String quotient = "A0a1B2";
+        String result = "A0a1B2";
         String remainder = "b3!";
 
-        ApiDto dto = new ApiDto(url, parsingType, bundleUnit, quotient, remainder);
+        ApiDto dto = new ApiDto(url, parsingType, bundleUnit, result, remainder);
 
 
         assertThat(dto.getUrl()).isEqualTo(url);
         assertThat(dto.getParsingType()).isEqualTo(parsingType);
         assertThat(dto.getBundleUnit()).isEqualTo(bundleUnit);
-        assertThat(dto.getQuotient()).isEqualTo(quotient);
+        assertThat(dto.getresult()).isEqualTo(result);
         assertThat(dto.getRemainder()).isEqualTo(remainder);
 
 

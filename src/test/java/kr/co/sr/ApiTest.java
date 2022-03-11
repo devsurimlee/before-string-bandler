@@ -45,7 +45,7 @@ public class ApiTest {
         String url = "http://" + addr + ":" + port;
         int parsingType = 0;
         int bundleUnit = 6;
-        String quotient = "A1a2a5a9BbbbCcccDeeilstt";
+        String result = "A1a2a5a9BbbbCcccDeeilstt";
         String remainder = "ttz";
 
         ApiDto dto = new ApiDto();
@@ -60,7 +60,7 @@ public class ApiTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.quotient").value(quotient))
+                .andExpect(jsonPath("$.result").value(result))
                 .andExpect(jsonPath("$.remainder").value(remainder))
                 .andDo(print());
 

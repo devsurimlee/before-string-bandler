@@ -70,21 +70,21 @@ public class ApiController {
             numQue.addAll(new ArrayList(Arrays.asList(numArr)));
 
 
-            String result = "";
+            String data = "";
             while (!engQue.isEmpty() || !numQue.isEmpty()) {
                 if (!engQue.isEmpty()) {
-                    result += engQue.pollLast();
+                    data += engQue.pollLast();
                 }
                 if (!numQue.isEmpty()) {
-                    result += numQue.poll();
+                    data += numQue.poll();
                 }
             }
 
-            int totalSize = result.length();
+            int totalSize = data.length();
             int remainderNum = totalSize % dto.getBundleUnit();
 
-            dto.setQuotient(result.substring(0, result.length() - remainderNum));
-            dto.setRemainder(result.substring(result.length() - remainderNum, result.length()));
+            dto.setResult(data.substring(0, data.length() - remainderNum));
+            dto.setRemainder(data.substring(data.length() - remainderNum, data.length()));
 
 
         } catch (Exception e) {
