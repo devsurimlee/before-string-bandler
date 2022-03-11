@@ -21,7 +21,7 @@ public class ApiDtoTest {
         assertThat(dto.getUrl()).isEqualTo(url);
         assertThat(dto.getParsingType()).isEqualTo(parsingType);
         assertThat(dto.getBundleUnit()).isEqualTo(bundleUnit);
-        assertThat(dto.getresult()).isEqualTo(result);
+        assertThat(dto.getResult()).isEqualTo(result);
         assertThat(dto.getRemainder()).isEqualTo(remainder);
 
 
