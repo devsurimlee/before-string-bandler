@@ -4,9 +4,10 @@ import kr.co.sr.dto.ApiDto;
 import org.springframework.stereotype.Service;
 
 import java.io.BufferedReader;
-import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -35,19 +36,16 @@ public class ApiService {
             return dto;
         }
 
-//        boolean isUrl = checkPattern(dto.getUrl(), pattern_url);
-//
-//        if (!isUrl) {
-//            dto.setResult("잘못된 경로입니다.");
-//            return dto;
-//        }
 
-        URL myURL = null;
+        URL url = null;
         try {
-            myURL = new URL(dto.getUrl());
-            InputStream is = myURL.openStream();
+            url = new URL(dto.getUrl());
+            HttpURLConnection con = (HttpURLConnection) url.openConnection();
+            con.setRequestMethod("GET");
+            con.setReadTimeout(1000);
+            con.connect();
 
-            BufferedReader br = new BufferedReader(new InputStreamReader(is));
+            BufferedReader br = new BufferedReader(new InputStreamReader(con.getInputStream(), StandardCharsets.UTF_8));
             StringBuffer sb = new StringBuffer();
             String tmp;
 
@@ -78,24 +76,26 @@ public class ApiService {
 
         String[] engArr = engStr.split("");
         String[] numArr = numStr.split("");
-        Arrays.sort(engArr, Collections.reverseOrder(String.CASE_INSENSITIVE_ORDER));
+        Arrays.sort(engArr, Comparator.<String, Character>comparing(s -> Character.toUpperCase(s.charAt(0)))
+                .thenComparing(s -> s));
         Arrays.sort(numArr);
 
-        Deque engQue = new LinkedList();
-        engQue.addAll(new ArrayList(Arrays.asList(engArr)));
-
-        Queue numQue = new LinkedList();
-        numQue.addAll(new ArrayList(Arrays.asList(numArr)));
-
-
+        int cnt = 0;
         String data = "";
-        while (!engQue.isEmpty() || !numQue.isEmpty()) {
-            if (!engQue.isEmpty()) {
-                data += engQue.pollLast();
-            }
-            if (!numQue.isEmpty()) {
-                data += numQue.poll();
-            }
+        while (cnt < engArr.length && cnt < numArr.length) {
+            data += engArr[cnt];
+            data += numArr[cnt];
+            cnt++;
+        }
+
+        if (cnt < engArr.length && numArr.length < engArr.length) {
+            String[] copyArr = Arrays.copyOfRange(engArr, cnt, engArr.length);
+            data += String.join("", copyArr);
+        }
+
+        if (cnt < numArr.length && engArr.length < numArr.length) {
+            String[] copyArr = Arrays.copyOfRange(numArr, cnt, numArr.length);
+            data += String.join("", copyArr);
         }
 
         int totalSize = data.length();
@@ -104,14 +104,32 @@ public class ApiService {
         dto.setResult(data.substring(0, data.length() - remainderNum));
         dto.setRemainder(data.substring(data.length() - remainderNum));
 
+        if (totalSize < dto.getBundleUnit()) {
+            dto.setResult("출력묶음단위가 전체데이터길이보다 큽니다. 숫자를 더 줄여주세요. (데이터 길이: " + totalSize + ")");
+        }
+
 
         return dto;
     }
 
+    /**
+     * 데이터에서 필요없는 부분 삭제처리
+     * 
+     * @param str
+     * @param pattern
+     * @return
+     */
     private String filteringPattern(String str, String pattern) {
         return str.replaceAll(pattern, "");
     }
 
+    /**
+     * 데이터가 정규식에 맞는지 체크
+     * 
+     * @param str
+     * @param pattern
+     * @return
+     */
     private boolean checkPattern(String str, String pattern) {
         Pattern pt = Pattern.compile(pattern);
         Matcher mc = pt.matcher(str);
