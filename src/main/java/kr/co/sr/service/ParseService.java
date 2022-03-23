@@ -1,6 +1,8 @@
 package kr.co.sr.service;
 
-import kr.co.sr.dto.ApiDto;
+import kr.co.sr.dto.OutputUnit;
+import kr.co.sr.dto.ParseRequestDto;
+import kr.co.sr.dto.ParseResponseDto;
 import org.springframework.stereotype.Service;
 
 import java.io.BufferedReader;
@@ -13,9 +15,9 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 @Service
-public class ApiService {
+public class ParseService {
 
-    public ApiDto getUrlContent(ApiDto dto) {
+    public ParseResponseDto getUrlContent(ParseRequestDto dto) throws Exception {
 
         String html = "";
         String baseStr = "";
@@ -32,8 +34,7 @@ public class ApiService {
         boolean isProtocol = checkPattern(dto.getUrl(), pattern_protocol);
 
         if (!isProtocol) {
-            dto.setResult("경로에 프로토콜이 필요합니다. http:// 혹은 https://를 추가해주세요.");
-            return dto;
+            throw new Exception("경로에 프로토콜이 필요합니다. http:// 혹은 https://를 추가해주세요.");
         }
 
 
@@ -55,19 +56,17 @@ public class ApiService {
             html = sb.toString();
 
             switch (dto.getParsingType()) {
-                case 0:
+                case REMOVE_HTML:
                     baseStr = filteringPattern(html, pattern_tag).replace(" ", "");
                     break;
-                case 1:
+                case ALL_TEXT:
                     baseStr = html;
                     break;
                 default:
-                    dto.setResult("없는 파싱타입입니다. 다시 확인해주세요.");
-                    return dto;
+                    throw new Exception("없는 파싱타입입니다. 다시 확인해주세요.");
             }
         } catch (Exception e) {
-            dto.setResult("잘못된 경로입니다.");
-            return dto;
+            throw new Exception("잘못된 경로입니다.");
         }
 
         baseStr = filteringPattern(baseStr, pattern_eng_and_num);       //영어-숫자
@@ -101,15 +100,14 @@ public class ApiService {
         int totalSize = data.length();
         int remainderNum = totalSize % dto.getBundleUnit();
 
-        dto.setResult(data.substring(0, data.length() - remainderNum));
-        dto.setRemainder(data.substring(data.length() - remainderNum));
+        final ParseResponseDto parseResponseDto = new ParseResponseDto(data.substring(0, data.length() - remainderNum), data.substring(data.length() - remainderNum));
 
         if (totalSize < dto.getBundleUnit()) {
-            dto.setResult("출력묶음단위가 전체데이터길이보다 큽니다. 숫자를 더 줄여주세요. (데이터 길이: " + totalSize + ")");
+            throw new Exception("출력묶음단위가 전체데이터길이보다 큽니다. 숫자를 더 줄여주세요. (데이터 길이: " + totalSize + ")");
         }
 
 
-        return dto;
+        return parseResponseDto;
     }
 
     /**
