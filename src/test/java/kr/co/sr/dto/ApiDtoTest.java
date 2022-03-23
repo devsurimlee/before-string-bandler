@@ -15,7 +15,7 @@ public class ApiDtoTest {
         String result = "A0a1B2";
         String remainder = "b3!";
 
-        ApiDto dto = new ApiDto(url, parsingType, bundleUnit, result, remainder);
+        ParseRequestDto dto = new ParseRequestDto(url, parsingType, bundleUnit, result, remainder);
 
 
         assertThat(dto.getUrl()).isEqualTo(url);
