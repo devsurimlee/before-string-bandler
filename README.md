@@ -1,4 +1,4 @@
-# springStudy
+# before-string-bandler(구 springStudy)
 
 
 #### 1. 프로젝트 실행 주의사항
